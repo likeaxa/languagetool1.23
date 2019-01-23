@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+>
+<head>
+    <title>词条管理</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" href="../static/img/titleLogo1.png" type="image/x-icon">
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../static/assets/css/metisMenu.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="../static/assets/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../static/assets/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../static/assets/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="../static/assets/css/boot-crm.css" rel="stylesheet"
+          type="text/css">
+    <link href="../static/assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet"
+          type="text/css">
+
+
+    <!--弹出对话框需要，jQuery的要放前面 ，不能换顺序，不然不能使用，我也不知道为什么-->
+    <script src="../static/assets/js/jquery.js" type="text/javascript"></script>
+    <script src="../static/assets/js/bootstrap.min.js" type="text/javascript"></script>
+
+
+    <!-- Vue.js 开发环境版本，包含了有帮助的命令行警告 -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+    <script src="../static/js/vue.min.js"></script>
+
+    <!--  axios  -->
+    <!--<script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
+    <script src="../static/js/axios.min.js"></script>
+
+</head>
+<body>
+
+<!--<div class="tertiary-nav bdr-btm-e0e0e0 navbar-fixed-top">-->
+    <!--<div class="container">-->
+        <!--<div class="p-t-b-15 clearfix">-->
+            <!--<div class="breadcrum-wrapper pull-left text-left">-->
+                <!--hello-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+
+<!--</div>-->
+
+
+<div class="container" id ="countrys">
+    <div class="row navbar navbar-default navbar-static-top" style="margin-bottom: 0">
+        <div class="col-xs-4">
+            <a class="navbar-brand" href="#">长虹词条管理系统</a>
+        </div>
+
+        <a class="navbar-brand" href="/">退出登录</a>
+    </div>
+    <div id="cen">
+        <div class="row">
+            <div class="col-xs-4 "></div>
+            <div class="col-xs-4 text-muted ">
+                <!--<h4>信息提示</h4>-->
+            </div>
+        </div>
+        <div class="row tertiary-nav  navbar-fixed-top ">
+            <div class="col-xs-4 "></div>
+            <div class="col-xs-4  pull-right text-right ">
+            <textarea rows="6" cols="40" id="resultMessage">信息提示
+             </textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div><h3>词条管理</h3></div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-6">
+            <div><h4>更新</h4></div>
+            <br>
+            <div class="navbar navbar-default" id="fileUpdate">
+                <form onsubmit="return onsubmitUpdateFile()" action="/getExceptFile" method="post"
+                      enctype="multipart/form-data">
+                    <div>
+                        <h4>选择需要更新数据库的的文件:<input type="file" class="btn btn-primary"  name="fileUpdate"/></h4>
+                    </div>
+                    <div class="navbar-brand">
+                        <h4>
+                            请选择更新类别
+                            <select id="selects1">
+                            </select>
+                            <button class="btn btn-primary" onclick="updateFile()">提交</button>
+                        </h4>
+                    </div>
+                    <br><br><br>
+                    <div>
+                        <button id="getExceptFile" class="btn btn-danger">
+                            获取错误文件
+                        </button>
+                    </div>
+                </form>
+                <br><br>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div><h4>语言管理</h4></div>
+            <br>
+            <div class="navbar navbar-default">
+                <div>
+                    <h4 class="navbar-brand">
+                        请选择国家语言
+                        <select id="selects2">
+                        </select>
+                    </h4>
+                </div>
+                <div >
+                    <h4>
+                       <input type="text" id="languageText" class="form-control" placeholder="填写需要修改的语言内容">
+                    </h4>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="updateLanguage()">修改</button>
+                </div>
+                <br>
+                <div>
+                    <button class="btn btn-primary" onclick="deleteLanguage()">删除</button>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-7"><h4>查询</h4></div>
+        <div><h4>转换</h4></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6 navbar navbar-default">
+            <div class="col-xs-6">
+                <p class="navbar-brand">
+                    请输入需要查询的词条<input class="form-control" type="text" id="values"/>
+                </p>
+            </div>
+            <div>
+                <h4 class="navbar-brand">
+                    请选择国家语言
+                    <select id="selects">
+                    </select>
+                    <button class="btn btn-primary" onclick="inquireWord()">查询</button>
+                </h4>
+            </div>
+            <div class="col-xs-5">
+                <p>查询结果<input class="form-control" type="text" id="inquireResult"/></p>
+                <button class="btn btn-primary" onclick="updataWord()">修改查询结果并点击这里可以修改词条</button>
+            </div>
+
+        </div>
+        <div class="col-xs-6 navbar navbar-default">
+            <form action="/updatefile" method="post" enctype="multipart/form-data">
+                <h4>选择需要转换的文件: <input class="btn btn-primary" type="file" name="fileName1"/></h4>
+                <p>转换的文件名(默认.xlsx文件): <input class="form-control" type="text" name="fileName2"/></p>
+                <p><input class="btn btn-primary" type="submit" value="提交"/></p>
+            </form>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <h4>数据库文件</h4>
+        <br>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">
+            <button onclick="getLogging()" class="btn btn-primary">获取日志记录</button>
+        </div>
+        <div class="col-xs-3">
+            <a href="/download2" class="btn btn-success">获取数据库文件</a>
+        </div>
+        <div class="col-xs-3">
+            <a href="/deleteDB" onclick="if(confirm('确定删除?')==false)return false;"
+               class="btn btn-danger">删除数据库文件</a>
+        </div>
+        <div class="col-xs-3">
+            <form action="/fileUpload" method="post" enctype="multipart/form-data">
+                <h4 >词条总文件上传
+                    <input class="text-danger" type="file" name="fileName"/>
+                    <input class="btn btn-primary" type="submit" value="提交"/>
+                </h4>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+</body>
+
+<script>
+
+    var getExceptFileFlag = false;
+
+    function confirmMessage() {
+        var gnl = confirm("确定要删除吗?");
+        if (gnl == false) {
+            return false;
+        }
+    }
+
+    function getExcept() {
+        return getExceptFileFlag;
+    }
+
+    function onsubmitUpdateFile() {
+        return getExceptFileFlag;
+    }
+
+    function getLogging() {
+        var url = "/logging";
+        axios.get(url).then(function (response) {
+            console.log(response);
+            var res = response.data;
+            var ss = "";
+            var format = function (time, format) {
+                var t = new Date(time);
+                var tf = function (i) {
+                    return (i < 10 ? '0' : '') + i
+                };
+                return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+                    switch (a) {
+                        case 'yyyy':
+                            return tf(t.getFullYear());
+                            break;
+                        case 'MM':
+                            return tf(t.getMonth() + 1);
+                            break;
+                        case 'mm':
+                            return tf(t.getMinutes());
+                            break;
+                        case 'dd':
+                            return tf(t.getDate());
+                            break;
+                        case 'HH':
+                            return tf(t.getHours());
+                            break;
+                        case 'ss':
+                            return tf(t.getSeconds());
+                            break;
+                    }
+                })
+            };
+            res.map(function (s) {
+                ss += s.version + "-->";
+                var date = new Date(s.time);
+                //date.format("yyyy-MM-dd hh:mm:ss.S");
+                var dates = format(date, 'yyyy-MM-dd HH-mm-ss');
+                console.log(s.time);
+                ss += dates + "-->";
+                //ss+=s.times.Format("yyyy-MM-dd hh:mm:ss.S")+"-->";
+                ss += s.type;
+                ss += "\n";
+            });
+            document.getElementById("resultMessage").value = ss;
+        })
+    }
+
+    function deleteLanguage() {
+
+        if (confirm("确认删除语言?") == false) return false;
+        var myselect = document.getElementById("selects2");
+        var index = myselect.selectedIndex;
+        var deleteLanguage = myselect.options[index].value;
+
+        axios.delete("/language?deleteLanguage=" + deleteLanguage, {
+            deleteLanguage: deleteLanguage
+        }).then(function (response) {
+            console.log(response.data);
+            document.getElementById("resultMessage").value = response.data;
+        })
+    }
+
+    function updateLanguage() {
+        if (confirm("确认更新语言?") == false) return false;
+        var myselect = document.getElementById("selects2");
+        var index = myselect.selectedIndex;
+        var olderLanguage = myselect.options[index].value;
+        var newLanguage = document.getElementById("languageText").value;
+        var params = new URLSearchParams();
+        params.append("olderLanguage", olderLanguage);
+        params.append("newLanguage", newLanguage);
+        axios.post("/language", params).then(function (response) {
+            console.log(response.data);
+            document.getElementById("resultMessage").value = response.data;
+        })
+    }
+
+    function updateFile() {
+        if (confirm("确认更新文件") == false) return false;
+        var formData = new FormData();// vue 中使用 window.FormData(),否则会报 'FormData isn't definded'
+        var myselect = document.getElementById("selects1");
+        var index = myselect.selectedIndex;
+        var type = myselect.options[index].value;
+        var test = document.querySelector('input[type="file"]').files;
+        if(test.length==0){
+            alert("文件不能为空");
+            return;
+        }
+        formData.append('fileUpdate', test[0]);
+        formData.append('type', type);
+        var options = {  // 设置axios的参数
+            url: '/fileupdate',
+            data: formData,
+            method: 'post',
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        };
+        axios(options).then(function (response) {
+            console.log(response);
+            var res = response.data;
+            var ss = "";
+            var flag1 = true;
+            res.map(function (s) {
+                var flag = s.split(">")[1];
+                if (flag != "ok"&&type=="检查覆盖") {
+                    if(flag1){
+                        alert("存在错误，可获取错误文件");
+                        flag1 = false;
+                    }
+                    $("#getExceptFile").show();
+                    getExceptFileFlag = true;
+                }
+                ss += s + "\n";
+            });
+            document.getElementById("resultMessage").value = ss;
+
+        });
+
+    }
+
+    var vue = new Vue({
+        el: '#countrys',
+        data: {
+            data: []
+        },
+        mounted: function () { //mounted　表示这个 Vue 对象加载成功了
+            var url = "/getcountry";
+            axios.get(url).then(function (response) {
+                console.log(response);
+                var result = response.data;
+                var selects = document.getElementById("selects");
+                var selects1 = document.getElementById("selects1");
+                var selects2 = document.getElementById("selects2");
+                selects.options.length = 0;
+                selects1.options.length = 0;
+                selects2.options.length = 0;
+                selects1.options.add(new Option("检查覆盖"));
+                selects1.options.add(new Option("覆盖"));
+                result.map(function (s) {
+                    selects.options.add(new Option(s));
+                    selects1.options.add(new Option(s));
+                    selects2.options.add(new Option(s));
+                });
+
+                $("#getExceptFile").hide();
+                // for(var i = 0;i<this.data.length;i++){
+                //     selects.options.add(new Option(this.data[i]));
+                // }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    });
+
+    /**
+     * 1:拿到select对象： var myselect=document.getElementById(“test”);
+
+     2：拿到选中项的索引：var index=myselect.selectedIndex ; // selectedIndex代表的是你所选中项的index
+
+     3:拿到选中项options的value： myselect.options[index].value;
+
+     4:拿到选中项options的text： myselect.options[index].text;
+     */
+    function inquireWord() {
+        var value = document.getElementById("values").value;
+        var myselect = document.getElementById("selects");
+        var index = myselect.selectedIndex;
+        var language = myselect.options[index].value;
+        //alert(value+language);
+        var type = "inquire";
+        var url = "/worldtranstion?value=" + value + "&language=" + language + "&type=" + type;
+        axios.get(url).then(function (response) {
+            console.log(response);
+            document.getElementById("inquireResult").value = response.data;
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    function updataWord() {
+        if (confirm("确认更新单词") == false) return false;
+        var value = document.getElementById("values").value;
+        var myselect = document.getElementById("selects");
+        var index = myselect.selectedIndex;
+        var language = myselect.options[index].value;
+        //alert(value+language);
+        var type = "inquire";
+        value = value + ":::" + document.getElementById("inquireResult").value;
+        var url = "/updateword?value=" + value + "&language=" + language;
+        axios.get(url).then(function (response) {
+            console.log(response)
+            var res = response.data;
+            alert(res);
+            if (res == "ok") {
+
+                document.getElementById("resultMessage").value = "修改成功";
+                //document.getElementById("inquireResult").value = "修改成功";
+            } else {
+                //document.getElementById("inquireResult").value = "修改失败";
+                document.getElementById("resultMessage").value = "修改失败";
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+</script>
+</html>
